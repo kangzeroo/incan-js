@@ -16,7 +16,7 @@ REST Hooks are an efficient alternative to:
 ## Quick Start
 
 #### Step 0:
-You will need a
+You will need a database to store websocket subscriptions. `incan-js` is database agnostic.
 
 #### Step 1:
 Install with npm:
@@ -128,7 +128,7 @@ Read Zapier's explanation of REST hooks <a href="https://zapier.com/developer/do
 <br/><br/>
 
 ## Specs
-The below 3 database functions must be custom made per database and passed in to `incan.connect()` by the developer. This allows `incan-js` to work with any persistent data store. I recommend Redis but you can use your existing SQL database, MongoDB, S3 Buckets... etc. Currently `incan-js` is limited to 1 persistent data store per run, so you can only call `incan.connect()` once.
+The below 3 database functions must be custom made per database and passed in to `incan.connect()` by the developer. This allows `incan-js` to work with any persistent data store. I recommend Redis or AWS S3 but you can use your existing SQL database, MongoDB, DynamoDB... etc. Currently `incan-js` is limited to 1 persistent data store per run, so you can only call `incan.connect()` once.
 
 #### addSubs()
 `addSubs(newSubscription)` should be a function that adds new webhook subscriptions to your database, returning a promise. Your `addSubs()` should by default accept an array and return a success/failure status.
