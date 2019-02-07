@@ -2,13 +2,14 @@
 A NodeJS library for handling many-to-many webhook subscriptions (also known as <a href="http://resthooks.org/">REST Hooks</a>).
 The Incan Empire was known for its highly efficient messenger system despite not having horses, written writing or the wheel. They used human runners known as "Chasquis" to deliver messages stored as knots on ropes. To learn more, watch this interesting mini-doc on the <a href="https://www.youtube.com/watch?v=3aYeUOVgbck">Incan civilization</a>.
 
-
-![Incan Messenger](imgs/how_resthooks_work.png)
+![Incan Messenger](imgs/incan_messenger.jpg)
+<br/><br/>
 
 ## An overview of REST Hooks
 Read Zapier's explanation of REST hooks <a href="https://zapier.com/developer/documentation/v2/rest-hooks/">here</a>
 
-![Visual Explanation](imgs/incan_messenger.jpg)
+![Visual Explanation](imgs/how_resthooks_work.png)
+<br/><br/>
 
 ## Setup
 #### Step 1:
