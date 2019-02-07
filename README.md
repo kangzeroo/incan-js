@@ -6,7 +6,7 @@ REST Hooks are an efficient alternative to the inefficient practice of polling (
 
 ![Incan Messenger](imgs/incan_messenger.jpg)
 <br/>
-<a href="https://www.youtube.com/watch?v=3aYeUOVgbck">The Incan Empire</a> was known for its highly efficient messenger system despite not having horses, written writing or the wheel.
+<a href="https://www.youtube.com/watch?v=3aYeUOVgbck">The Incan Empire</a> was known for its highly efficient messenger system despite not having horses, written writing or the wheel. `incan-js` is stateful, unlike REST which is stateless.
 <br/><br/>
 
 ## Quick Start
