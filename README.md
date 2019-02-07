@@ -24,7 +24,6 @@ CREATE TABLE webhooks_table (
     event_id STRING,
     url_endpoint STRING
 );
-
 ```
 
 #### Step 1:
