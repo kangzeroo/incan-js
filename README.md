@@ -1,5 +1,5 @@
 # Incan JS
-A NodeJS library for handling many-to-many webhook subscriptions (also known as <a href="http://resthooks.org/">REST Hooks</a>). It is a robust alternative to polling (when servers check for changes by making REST requests every X seconds), which is terribly inefficient.<br/>
+A NodeJS library for handling many-to-many webhook subscriptions (also known as <a href="http://resthooks.org/">REST Hooks</a>). It is a robust alternative to the inefficient practice of polling (when servers check for changes by making REST requests every X seconds).<br/>
 
 
 ![Incan Messenger](imgs/incan_messenger.jpg)
