@@ -16,8 +16,8 @@ app.use(bodyParser.json())
 incan.connect({ addSubs, removeSubs, querySubs })
 
 // basic route
-app.post('/', (req, res) => {
-  console.log('POST /')
+app.post('/trigger_event', (req, res) => {
+  console.log('POST /trigger_event')
   const payload = req.body
   incan.emit(payload.resource_id, payload.event_id, payload, { headers: {} })
     .then((data) => {

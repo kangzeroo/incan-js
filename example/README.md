@@ -6,3 +6,4 @@ You will need Postman <a href="https://chrome.google.com/webstore/detail/postman
 3. Use Postman to mock REST calls. Watch the below video to see the example in action,
 
 ## Video Tutorial
+https://www.youtube.com/watch?v=jkV7gbStYkU

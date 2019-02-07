@@ -15,6 +15,7 @@ Photo curtosey of <a href="http://cuzcoeats.com/chasquis-communication-incas-tim
 <br/><br/>
 
 ## Quick Start
+Video Tutorial: https://www.youtube.com/watch?v=jkV7gbStYkU
 
 #### Step 0:
 You will need a database to store websocket subscriptions. `incan-js` is database agnostic because you provide the database queries. The data schema should look like below. We recommend indexing on the `resource_id` key for fast retrievals.
