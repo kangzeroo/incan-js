@@ -1,15 +1,22 @@
 # Incan JS
 A NodeJS library for handling many-to-many webhook subscriptions (also known as <a href="http://resthooks.org/">REST Hooks</a>). Clients can listen to any arbitrary event happening on your server.
 <br/><br/>
-REST Hooks are an efficient alternative to the inefficient practice of polling (when clients check for changes by making REST requests every X seconds).<br/>
+REST Hooks are an efficient alternative to:
+- The inefficient practice of polling (when clients check for changes by making REST requests every X seconds)<br/>
+- The expensive cost of websocket connections at scale<br/>
+`incan-js` should be used alongside your existing stateless REST api as a way for other servers (clients) to subscribe to real-time updates.
 
 
 ![Incan Messenger](imgs/incan_messenger.jpg)
 <br/>
-<a href="https://www.youtube.com/watch?v=3aYeUOVgbck">The Incan Empire</a> was known for its highly efficient messenger system despite not having horses, written writing or the wheel. `incan-js` is stateful, unlike REST which is stateless.
+<a href="https://www.youtube.com/watch?v=3aYeUOVgbck">The Incan Empire</a> was known for its highly efficient messenger system despite not having horses, written writing or the wheel.
 <br/><br/>
 
 ## Quick Start
+
+#### Step 0:
+You will need a
+
 #### Step 1:
 Install with npm:
 ```
