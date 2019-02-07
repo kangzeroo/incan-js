@@ -8,7 +8,7 @@ The Incan Empire was known for its highly efficient messenger system despite not
 <br/><br/>
 
 ## An overview of REST Hooks
-Read Zapier's explanation of REST hooks <a href="https://zapier.com/developer/documentation/v2/rest-hooks/">here</a>. You will need your own persistant data store! I recommend Redis but you can use your existing SQL database, MongoDB, S3 Buckets...etc
+Read Zapier's explanation of REST hooks <a href="https://zapier.com/developer/documentation/v2/rest-hooks/">here</a>. You will need your own persistant data store. I recommend Redis but you can use your existing SQL database, MongoDB, S3 Buckets...etc
 
 ![Visual Explanation](imgs/how_resthooks_work.png)
 <br/><br/>
@@ -115,12 +115,11 @@ addFriendToSocialNetwork('khan', 'david')
 ```
 
 ## Specs
-The below 3 database functions must be custom made and passed in to `incan.connect()` by the developer. This allows `incan-js` to work with any persistent data store. I recommend Redis but you can use your existing SQL database, MongoDB, S3 Buckets... etc. Currently `incan-js` is limited to 1 persistent data store.
+The below 3 database functions must be custom made per database and passed in to `incan.connect()` by the developer. This allows `incan-js` to work with any persistent data store. I recommend Redis but you can use your existing SQL database, MongoDB, S3 Buckets... etc. Currently `incan-js` is limited to 1 persistent data store per run, so you can only call `incan.connect()` once.
 
 #### addSubs()
-`addSubs(newSubscription)` should be a function that adds new webhook subscriptions to your database, returning a promise. Your `addSubs()` should by default accept an array.
+`addSubs(newSubscription)` should be a function that adds new webhook subscriptions to your database, returning a promise. Your `addSubs()` should by default accept an array and return a success/failure status.
 ```
-//
 // customDatabaseAPI.js
 // addSubs() = customDatabaseAPI.addFn
 const newSubscriptions = [{
@@ -140,7 +139,7 @@ const addFn = (newSubscriptions) => {
 }
 ```
 #### removeSubs()
-`removeSubs(existingSubscription)` should be a function that removes webhook subscriptions from your database, returning a promise. `removeSubs()` is used by `incan-js` to delete webhooks automatically (eg. Upon a `410` response). Your `removeSubs()` should by default accept an array.
+`removeSubs(existingSubscription)` should be a function that removes webhook subscriptions from your database, returning a promise. `removeSubs()` is used by `incan-js` to delete webhooks automatically (eg. Upon a `410` response). Your `removeSubs()` should by default accept an array and return a success/failure status.
 ```
 // customDatabaseAPI.js
 // removeSubs() = customDatabaseAPI.removeFn
