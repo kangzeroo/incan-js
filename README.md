@@ -1,12 +1,14 @@
 # Incan JS
-A NodeJS library for handling many-to-many webhook subscriptions (also known as <a href="http://resthooks.org/">REST Hooks</a>)
+A NodeJS library for handling many-to-many webhook subscriptions (also known as <a href="http://resthooks.org/">REST Hooks</a>).
 The Incan Empire was known for its highly efficient messenger system despite not having horses, written writing or the wheel. They used human runners known as "Chasquis" to deliver messages stored as knots on ropes. To learn more, watch this interesting mini-doc on the <a href="https://www.youtube.com/watch?v=3aYeUOVgbck">Incan civilization</a>.
 
 
-![Incan Messenger](imgs/incan_messenger.jpg)
+![Incan Messenger](imgs/how_resthooks_work.png)
 
 ## An overview of REST Hooks
 Read Zapier's explanation of REST hooks <a href="https://zapier.com/developer/documentation/v2/rest-hooks/">here</a>
+
+![Visual Explanation](imgs/incan_messenger.jpg)
 
 ## Setup
 #### Step 1:
@@ -33,7 +35,13 @@ incan.connect({
 #### Step 3:
 Use the 3 `incan-js` functions to manage your REST hook subscriptions.
 ```
-// incoming
+// your 3 incan functions
+incan.addSubs([ resthook_subscription ])
+incan.removeSubs([ resthook_subscription ])
+incan.emit(someEvent.resource_id, someEvent.event_id, someEvent.payload)
+
+
+// reference
 const resthook_subscription = {
   client_id: 'zapier',
   resource_id: 'khan',
@@ -50,10 +58,6 @@ const someEvent = {
   }
 }
 
-// your 3 incan functions
-incan.addSubs([ resthook_subscription ])
-incan.removeSubs([ resthook_subscription ])
-incan.emit(someEvent.resource_id, someEvent.event_id, someEvent.payload)
 ```
 
 ## Implementation
@@ -75,6 +79,7 @@ app.post('/subscribe', function(err, req) {
   */
   incan.addSubs(newSubscriptions)
 })
+
 app.post('/unsubscribe', function(err, req) {
   const existingSubscriptions = req.body
   /*
@@ -112,13 +117,16 @@ The below 3 database functions must be custom made and passed in to `incan.conne
 #### addSubs()
 `addSubs(newSubscription)` should be a function that adds new webhook subscriptions to your database, returning a promise. Your `addSubs()` should by default accept an array.
 ```
-const newSubscriptions = {
+//
+// customDatabaseAPI.js
+// addSubs() = customDatabaseAPI.addFn
+const newSubscriptions = [{
   client_id: '<IDENTIFIER_OF_CLIENT>',
   resource_id: '<IDENTIFIER_OF_RESOURCE>',
   event_id: '<IDENTIFIER_OF_EVENT>',
   url_endpoint: '<WEBHOOK_TO_HIT>',
-}
-const addSubs = (newSubscriptions) => {
+}]
+const addFn = (newSubscriptions) => {
   return Promise.all(newSubscriptions.map((sub) => {
     return AztecDB.exec(`
           INSERT client_id, resource_id, event_id, url_endpoint
@@ -131,12 +139,14 @@ const addSubs = (newSubscriptions) => {
 #### removeSubs()
 `removeSubs(existingSubscription)` should be a function that removes webhook subscriptions from your database, returning a promise. `removeSubs()` is used by `incan-js` to delete webhooks automatically (eg. Upon a `410` response). Your `removeSubs()` should by default accept an array.
 ```
-const existingSubscription = {
+// customDatabaseAPI.js
+// removeSubs() = customDatabaseAPI.removeFn
+const existingSubscriptions = [{
   client_id: '<IDENTIFIER_OF_CLIENT>',
   resource_id: '<IDENTIFIER_OF_RESOURCE>',
   event_id: '<IDENTIFIER_OF_EVENT>',
-}
-const removeSubs = (existingSubscriptions) => {
+}]
+const removeFn = (existingSubscriptions) => {
   return Promise.all(existingSubscriptions.map((sub) => {
     return AztecDB.exec(`
         DELETE FROM resthook_subscriptions
@@ -150,7 +160,9 @@ const removeSubs = (existingSubscriptions) => {
 #### querySubs()
 `querySubs(resource_id, event_id)` should be a function that queries your database for webhook subscriptions with matching `resource_id` and `event_id`. It should return a promise with an array of matches. `incan-js` will use the `querySubs` function to fulfill any waiting webhooks. Any `POST` request to a webhook endpoint returning a `410` response will automatically unsubscribe from the webhook.
 ```
-const querySubs = (resource_id, event_id) => {
+// customDatabaseAPI.js
+// querySubs() = customDatabaseAPI.queryFn
+const queryFn = (resource_id, event_id) => {
   return AztecDB.exec(`
       SELECT FROM resthook_subscriptions
       WHERE resource_id = resource_id,
