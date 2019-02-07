@@ -17,12 +17,12 @@ Photo curtosey of <a href="http://cuzcoeats.com/chasquis-communication-incas-tim
 ## Quick Start
 
 #### Step 0:
-You will need a database to store websocket subscriptions. `incan-js` is database agnostic because you provide the database queries. The data schema should look like this:
+You will need a database to store websocket subscriptions. `incan-js` is database agnostic because you provide the database queries. The data schema should look like below. We recommend indexing on the `resource_id` key for fast retrievals.
 ```
 ~ webhooks_table ~
 
+resource_id STRING PRIMARY,
 client_id STRING,
-resource_id STRING,
 event_id STRING,
 url_endpoint STRING
 ```
@@ -35,7 +35,7 @@ $ npm install --save incan-js
 
 #### Step 2:
 Initialize `incan-js` into your REST server by passing in 3 database functions: `addSubs`, `removeSubs`, and `querySubs`.
-These functions are custom to your database solution. They allow `incan-js` to access your database and modify the `webhooks_table`. For more details on each, scroll down to the specs.
+These functions are custom to your database solution. They allow `incan-js` to access your database and modify the `webhooks_table`. For more details on each, scroll down to the specs. Look inside the `drivers/` folder to see an example for `postgreSQL`.
 
 ```js
 const incan = require('incan-js')
@@ -60,7 +60,8 @@ incan.removeSubs(webhooks)
 
 // trigger a webhook
 const { resource_id, event_id, payload } = someEvent
-incan.emit(resource_id, event_id, payload)
+const headers = { headers: { Authorization: 'Bearer <AUTH_TOKEN>' } }
+incan.emit(resource_id, event_id, payload, headers)
 
 // query webhooks
 incan.querySubs(resource_id, event_id)
@@ -126,8 +127,8 @@ Now that clients have subscribed to events, we can emit events with `incan.emit(
 // emit the `added_friend` event to all listeners
 
 addFriendToSocialNetwork('khan', 'david').then(({ me, friend, data }) => {
-  // incan.emit(resource_id, event_id, payload)
-  incan.emit(me, 'added_friend', data)
+  // incan.emit(resource_id, event_id, payload, headers)
+  incan.emit(me, 'added_friend', data, { headers: { Authorization: 'Bearer <AUTH_TOKEN>' } })
 })
 ```
 <br/><br/><br/><br/><br/>
@@ -155,9 +156,8 @@ const newSubscriptions = [{
 exports.addFn = (newSubscriptions) => {
   return Promise.all(newSubscriptions.map((sub) => {
     return AztecDB.exec(`
-          INSERT client_id, resource_id, event_id, url_endpoint
-          INTO webhooks_table
-          VALUES ${sub.client_id}, ${sub.resource_id}, ${sub.event_id}, ${sub.url_endpoint}
+          INSERT INTO webhooks_table (client_id, resource_id, event_id, url_endpoint)
+          VALUES (${sub.client_id}, ${sub.resource_id}, ${sub.event_id}, ${sub.url_endpoint});
       `)
     }))
 }
@@ -180,7 +180,7 @@ exports.removeFn = (existingSubscriptions) => {
         DELETE FROM webhooks_table
         WHERE client_id = ${sub.client_id}
         AND resource_id = ${sub.resource_id}
-        AND event_id = ${sub.event_id}
+        AND event_id = ${sub.event_id};
     `)
   }))
 }
@@ -194,8 +194,8 @@ exports.removeFn = (existingSubscriptions) => {
 exports.queryFn = (resource_id, event_id) => {
   return AztecDB.exec(`
       SELECT FROM webhooks_table
-      WHERE resource_id = resource_id,
-      AND event_id = event_id
+      WHERE resource_id = resource_id
+      AND event_id = event_id;
   `)
 }
 ```
