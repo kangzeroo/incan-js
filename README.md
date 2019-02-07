@@ -1,12 +1,14 @@
 # Incan JS
-A NodeJS library for handling many-to-many webhook subscriptions (also known as <a href="http://resthooks.org/">REST Hooks</a>).
-The Incan Empire was known for its highly efficient messenger system despite not having horses, written writing or the wheel. They used human runners known as "Chasquis" to deliver messages stored as knots on ropes. To learn more, watch this interesting mini-doc on the <a href="https://www.youtube.com/watch?v=3aYeUOVgbck">Incan civilization</a>.
+A NodeJS library for handling many-to-many webhook subscriptions (also known as <a href="http://resthooks.org/">REST Hooks</a>). It is a robust alternative to polling (when servers check for changes by making REST requests every X seconds), which is terribly inefficient.<br/>
+
 
 ![Incan Messenger](imgs/incan_messenger.jpg)
+<br/>
+The Incan Empire was known for its highly efficient messenger system despite not having horses, written writing or the wheel. They used human runners known as "Chasquis" to deliver messages stored as knots on ropes. To learn more, watch this interesting mini-doc on the <a href="https://www.youtube.com/watch?v=3aYeUOVgbck">Incan civilization</a>.
 <br/><br/>
 
 ## An overview of REST Hooks
-Read Zapier's explanation of REST hooks <a href="https://zapier.com/developer/documentation/v2/rest-hooks/">here</a>
+Read Zapier's explanation of REST hooks <a href="https://zapier.com/developer/documentation/v2/rest-hooks/">here</a>. You will need your own persistant data store! I recommend Redis but you can use your existing SQL database, MongoDB, S3 Buckets...etc
 
 ![Visual Explanation](imgs/how_resthooks_work.png)
 <br/><br/>
@@ -171,3 +173,6 @@ const queryFn = (resource_id, event_id) => {
   `)
 }
 ```
+
+## Limitations
+`incan-js` and REST Hooks are highly effective for sending real-time updates to static servers (with an I.P. address or domain name). However, it cannot support client -> server communications. For that, check out <a href="https://socket.io/">websockets</a>.
