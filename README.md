@@ -7,12 +7,6 @@ A NodeJS library for handling many-to-many webhook subscriptions (also known as 
 The Incan Empire was known for its highly efficient messenger system despite not having horses, written writing or the wheel. They used human runners known as "Chasquis" to deliver messages stored as knots on ropes. To learn more, watch this interesting mini-doc on the <a href="https://www.youtube.com/watch?v=3aYeUOVgbck">Incan civilization</a>.
 <br/><br/>
 
-## An overview of REST Hooks
-Read Zapier's explanation of REST hooks <a href="https://zapier.com/developer/documentation/v2/rest-hooks/">here</a>. You will need your own persistant data store. I recommend Redis but you can use your existing SQL database, MongoDB, S3 Buckets...etc
-
-![Visual Explanation](imgs/how_resthooks_work.png)
-<br/><br/>
-
 ## Setup
 #### Step 1:
 Install with npm:
@@ -114,6 +108,12 @@ const addFriendToSocialNetwork = (my_name, new_friend) => {
 
 addFriendToSocialNetwork('khan', 'david')
 ```
+
+## An overview of REST Hooks
+Read Zapier's explanation of REST hooks <a href="https://zapier.com/developer/documentation/v2/rest-hooks/">here</a>. You will need your own persistant data store. I recommend Redis but you can use your existing SQL database, MongoDB, S3 Buckets...etc
+
+![Visual Explanation](imgs/how_resthooks_work.png)
+<br/><br/>
 
 ## Specs
 The below 3 database functions must be custom made per database and passed in to `incan.connect()` by the developer. This allows `incan-js` to work with any persistent data store. I recommend Redis but you can use your existing SQL database, MongoDB, S3 Buckets... etc. Currently `incan-js` is limited to 1 persistent data store per run, so you can only call `incan.connect()` once.
