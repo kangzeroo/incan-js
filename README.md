@@ -8,7 +8,8 @@ REST Hooks are an efficient alternative to:
 `incan-js` should be used alongside your existing stateless REST api as a way for other servers (clients) to subscribe to real-time updates.
 
 
-![Incan Messenger](imgs/incan_messenger.jpg) Photo curtosey of ![cuzcoeats.com](http://cuzcoeats.com/chasquis-communication-incas-time/)
+![Incan Messenger](imgs/incan_messenger.jpg)
+Photo curtosey of <a href="http://cuzcoeats.com/chasquis-communication-incas-time/">cuzcoeats.com</a>
 <br/>
 <a href="https://www.youtube.com/watch?v=3aYeUOVgbck">The Incan Empire</a> was known for its highly efficient messenger system despite not having horses, written writing or the wheel.
 <br/><br/>
