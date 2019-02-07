@@ -1,7 +1,7 @@
 # Incan JS
 A NodeJS library for handling many-to-many webhook subscriptions (also known as <a href="http://resthooks.org/">REST Hooks</a>). Clients can listen to any arbitrary event happening on your server.
 <br/><br/>
-REST Hooks are an efficient alternative to the inefficient practice of polling (when servers check for changes by making REST requests every X seconds).<br/>
+REST Hooks are an efficient alternative to the inefficient practice of polling (when clients check for changes by making REST requests every X seconds).<br/>
 
 
 ![Incan Messenger](imgs/incan_messenger.jpg)
@@ -18,7 +18,8 @@ $ npm install --save incan-js
 
 #### Step 2:
 Initialize `incan-js` into your REST server by passing in 3 database functions: `addSubs`, `removeSubs`, and `querySubs`.
-These functions are custom to your database solution. For more details on each, scroll down to the specs.
+These functions are custom to your database solution. They allow `incan-js` to access your database and modify the `webhooks_table`. For more details on each, scroll down to the specs.
+
 ```
 const incan = require('incan-js')
 const customDB = require('../customDatabaseAPI')
@@ -143,7 +144,7 @@ const addFn = (newSubscriptions) => {
   return Promise.all(newSubscriptions.map((sub) => {
     return AztecDB.exec(`
           INSERT client_id, resource_id, event_id, url_endpoint
-          INTO webhooks_tbl
+          INTO webhooks_table
           VALUES ${sub.client_id}, ${sub.resource_id}, ${sub.event_id}, ${sub.url_endpoint}
       `)
     }))
@@ -162,7 +163,7 @@ const existingSubscriptions = [{
 const removeFn = (existingSubscriptions) => {
   return Promise.all(existingSubscriptions.map((sub) => {
     return AztecDB.exec(`
-        DELETE FROM webhooks_tbl
+        DELETE FROM webhooks_table
         WHERE client_id = ${sub.client_id}
         AND resource_id = ${sub.resource_id}
         AND event_id = ${sub.event_id}
@@ -177,7 +178,7 @@ const removeFn = (existingSubscriptions) => {
 // incan.querySubs() = customDatabaseAPI.queryFn
 const queryFn = (resource_id, event_id) => {
   return AztecDB.exec(`
-      SELECT FROM webhooks_tbl
+      SELECT FROM webhooks_table
       WHERE resource_id = resource_id,
       AND event_id = event_id
   `)
