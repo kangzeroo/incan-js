@@ -4,6 +4,7 @@ A NodeJS library for handling many-to-many webhook subscriptions (also known as 
 REST Hooks are an efficient alternative to:
 - The inefficient practice of polling (when clients check for changes by making REST requests every X seconds)<br/>
 - The expensive cost of websocket connections at scale<br/>
+
 `incan-js` should be used alongside your existing stateless REST api as a way for other servers (clients) to subscribe to real-time updates.
 
 
