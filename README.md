@@ -36,11 +36,12 @@ incan.connect({
 ```
 
 #### Step 3:
-Use the 3 `incan-js` functions to manage your REST hook subscriptions.
+Use the 4 `incan-js` functions to manage your REST hook subscriptions. Note that you will unlikely need to use `incan.querySubs()` but its there if you need. `incan.emit()` will be used often.
 ```
 // your 3 incan functions
 incan.addSubs([ resthook_subscription ])
 incan.removeSubs([ resthook_subscription ])
+incan.querySubs(someEvent.resource_id, someEvent.event_id)
 incan.emit(someEvent.resource_id, someEvent.event_id, someEvent.payload)
 
 
@@ -121,7 +122,7 @@ The below 3 database functions must be custom made per database and passed in to
 `addSubs(newSubscription)` should be a function that adds new webhook subscriptions to your database, returning a promise. Your `addSubs()` should by default accept an array and return a success/failure status.
 ```
 // customDatabaseAPI.js
-// addSubs() = customDatabaseAPI.addFn
+// incan.addSubs() = customDatabaseAPI.addFn
 const newSubscriptions = [{
   client_id: '<IDENTIFIER_OF_CLIENT>',
   resource_id: '<IDENTIFIER_OF_RESOURCE>',
@@ -142,7 +143,7 @@ const addFn = (newSubscriptions) => {
 `removeSubs(existingSubscription)` should be a function that removes webhook subscriptions from your database, returning a promise. `removeSubs()` is used by `incan-js` to delete webhooks automatically (eg. Upon a `410` response). Your `removeSubs()` should by default accept an array and return a success/failure status.
 ```
 // customDatabaseAPI.js
-// removeSubs() = customDatabaseAPI.removeFn
+// incan.removeSubs() = customDatabaseAPI.removeFn
 const existingSubscriptions = [{
   client_id: '<IDENTIFIER_OF_CLIENT>',
   resource_id: '<IDENTIFIER_OF_RESOURCE>',
@@ -163,7 +164,7 @@ const removeFn = (existingSubscriptions) => {
 `querySubs(resource_id, event_id)` should be a function that queries your database for webhook subscriptions with matching `resource_id` and `event_id`. It should return a promise with an array of matches. `incan-js` will use the `querySubs` function to fulfill any waiting webhooks. Any `POST` request to a webhook endpoint returning a `410` response will automatically unsubscribe from the webhook.
 ```
 // customDatabaseAPI.js
-// querySubs() = customDatabaseAPI.queryFn
+// incan.querySubs() = customDatabaseAPI.queryFn
 const queryFn = (resource_id, event_id) => {
   return AztecDB.exec(`
       SELECT FROM resthook_subscriptions
