@@ -4,7 +4,7 @@ A NodeJS library for handling many-to-many webhook subscriptions (also known as 
 
 ![Incan Messenger](imgs/incan_messenger.jpg)
 <br/>
-The Incan Empire was known for its highly efficient messenger system despite not having horses, written writing or the wheel. They used human runners known as "Chasquis" to deliver messages stored as knots on ropes. To learn more, watch this interesting mini-doc on the <a href="https://www.youtube.com/watch?v=3aYeUOVgbck">Incan civilization</a>.
+<a href="https://www.youtube.com/watch?v=3aYeUOVgbck">The Incan Empire</a> was known for its highly efficient messenger system despite not having horses, written writing or the wheel.
 <br/><br/>
 
 ## Setup
