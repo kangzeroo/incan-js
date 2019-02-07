@@ -89,6 +89,7 @@ The below example shows how to add `incan-js` to the REST endpoints of an Expres
 ```
 // routes.js
 
+// POST /subscribe
 app.post('/subscribe', function(err, req) {
   const newSubscriptions = req.body
   /*
