@@ -30,16 +30,22 @@ incan.connect({
 ```
 
 #### Step 3:
-Use the 4 `incan-js` functions to manage your REST hook subscriptions. Note that you will unlikely need to use `incan.querySubs()` but its there if you need. `incan.emit()` will be used often.
+Use the four `incan-js` functions to manage your REST hook subscriptions.
 ```
-// your 3 incan functions
+// add a webhook
 incan.addSubs([ resthook_subscription ])
+
+// remove a webhook
 incan.removeSubs([ resthook_subscription ])
-incan.querySubs(someEvent.resource_id, someEvent.event_id)
+
+// trigger a webhook
 incan.emit(someEvent.resource_id, someEvent.event_id, someEvent.payload)
 
+// query webhooks
+incan.querySubs(someEvent.resource_id, someEvent.event_id)
 
-// reference
+
+// reference objects
 const resthook_subscription = {
   client_id: 'zapier',
   resource_id: 'khan',
@@ -108,7 +114,7 @@ const addFriendToSocialNetwork = (my_name, new_friend) => {
 
 addFriendToSocialNetwork('khan', 'david')
 ```
-
+<br/><br/><br/><br/><br/>
 ## An overview of REST Hooks
 Read Zapier's explanation of REST hooks <a href="https://zapier.com/developer/documentation/v2/rest-hooks/">here</a>. You will need your own persistant data store. I recommend Redis but you can use your existing SQL database, MongoDB, S3 Buckets...etc
 
