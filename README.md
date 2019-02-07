@@ -9,7 +9,7 @@ REST Hooks are an efficient alternative to the inefficient practice of polling (
 <a href="https://www.youtube.com/watch?v=3aYeUOVgbck">The Incan Empire</a> was known for its highly efficient messenger system despite not having horses, written writing or the wheel.
 <br/><br/>
 
-## Setup
+## Quick Start
 #### Step 1:
 Install with npm:
 ```
@@ -42,7 +42,7 @@ incan.addSubs(webhooks)
 incan.removeSubs(webhooks)
 
 // trigger a webhook
-const { resource_id, event_id } = someEvent
+const { resource_id, event_id, payload } = someEvent
 incan.emit(resource_id, event_id, payload)
 
 // query webhooks
@@ -69,7 +69,7 @@ const someEvent = {
 ```
 
 ## Implementation
-Add a `POST /subscribe` and `POST /unsubscribe` endpoint to your REST routes so that other servers can listen to events.
+The below example shows how to add `incan-js` to the REST endpoints of an ExpressJS app. Add a `POST /subscribe` and `POST /unsubscribe` endpoint to your REST routes so that clients can tell your server which events it wants to subscribe to. This is where `addSubs()` and `removeSubs()` are used.
 ```
 // routes.js
 
@@ -103,21 +103,14 @@ app.post('/unsubscribe', function(err, req) {
   incan.removeSubs(existingSubscriptions)
 })
 ```
-Now other servers can subscribe/unsubscribe to events in your backend flow. To have `incan-js` emit an event to all listeners, simply use `incan.emit(resource_id, event_id, payload)`. `incan-js` will automatically use `querySubs()` to find matching webhook subscriptions, send out the event, and automatically unsubscribe upon any `410` responses.
+Now that clients have subscribed to events, we can emit events with `incan.emit()`. Behind the scenes, `incan.emit()` will use `querySubs()` to find matching webhook subscriptions in your database. Then `incan.emit()` will send out the event to the appropriate `url_endpoint`, and automatically unsubscribe upon any `410` responses.
 ```
 // emit the `added_friend` event to all listeners
 
-const addFriendToSocialNetwork = (my_name, new_friend) => {
-  AztecDB.exec(`
-      INSERT name
-      INTO friends_table
-      VALUES friend_name
-    `).then((data) => {
-      incan.emit(my_name, 'added_friend', data)
-    })
-}
-
-addFriendToSocialNetwork('khan', 'david')
+addFriendToSocialNetwork('khan', 'david').then(({ me, friend, data }) => {
+  // incan.emit(resource_id, event_id, payload)
+  incan.emit(me, 'added_friend', data)
+})
 ```
 <br/><br/><br/><br/><br/>
 ## An overview of REST Hooks
