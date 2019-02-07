@@ -8,7 +8,7 @@ REST Hooks are an efficient alternative to:
 `incan-js` should be used alongside your existing stateless REST api as a way for other servers (clients) to subscribe to real-time updates.
 
 
-![Incan Messenger](imgs/incan_messenger.jpg)
+![Incan Messenger](imgs/incan_messenger.jpg) Photo curtosey of ![cuzcoeats.com](http://cuzcoeats.com/chasquis-communication-incas-time/)
 <br/>
 <a href="https://www.youtube.com/watch?v=3aYeUOVgbck">The Incan Empire</a> was known for its highly efficient messenger system despite not having horses, written writing or the wheel.
 <br/><br/>
@@ -16,14 +16,14 @@ REST Hooks are an efficient alternative to:
 ## Quick Start
 
 #### Step 0:
-You will need a database to store websocket subscriptions. `incan-js` is database agnostic because you provide the database queries. The schema should look like this:
+You will need a database to store websocket subscriptions. `incan-js` is database agnostic because you provide the database queries. The data schema should look like this:
 ```
-CREATE TABLE webhooks_table (
-    client_id STRING,
-    resource_id STRING,
-    event_id STRING,
-    url_endpoint STRING
-);
+~ webhooks_table ~
+
+client_id STRING,
+resource_id STRING,
+event_id STRING,
+url_endpoint STRING
 ```
 
 #### Step 1:
@@ -36,7 +36,7 @@ $ npm install --save incan-js
 Initialize `incan-js` into your REST server by passing in 3 database functions: `addSubs`, `removeSubs`, and `querySubs`.
 These functions are custom to your database solution. They allow `incan-js` to access your database and modify the `webhooks_table`. For more details on each, scroll down to the specs.
 
-```
+```js
 const incan = require('incan-js')
 const customDB = require('../customDatabaseAPI')
 
@@ -50,7 +50,7 @@ incan.connect({
 
 #### Step 3:
 Use the four `incan-js` functions to manage your REST hook subscriptions.
-```
+```js
 // add a webhook
 incan.addSubs(webhooks)
 
@@ -86,7 +86,7 @@ const someEvent = {
 
 ## Implementation
 The below example shows how to add `incan-js` to the REST endpoints of an ExpressJS app. Add a `POST /subscribe` and `POST /unsubscribe` endpoint to your REST routes so that clients can tell your server which events it wants to subscribe to. This is where `addSubs()` and `removeSubs()` are used.
-```
+```js
 // routes.js
 
 // POST /subscribe
@@ -121,7 +121,7 @@ app.post('/unsubscribe', function(err, req) {
 })
 ```
 Now that clients have subscribed to events, we can emit events with `incan.emit()`. Behind the scenes, `incan.emit()` will use `querySubs()` to find matching webhook subscriptions in your database. Then `incan.emit()` will send out the event to the appropriate `url_endpoint`s, and automatically unsubscribe upon any `410` responses.
-```
+```js
 // emit the `added_friend` event to all listeners
 
 addFriendToSocialNetwork('khan', 'david').then(({ me, friend, data }) => {
@@ -141,7 +141,7 @@ The below 3 database functions must be custom made per database and passed in to
 
 #### addSubs()
 `addSubs(newSubscription)` should be a function that adds new webhook subscriptions to your database, returning a promise. Your `addSubs()` should by default accept an array and return a success/failure status.
-```
+```js
 // incan.addSubs() = customDatabaseAPI.addFn
 
 // customDatabaseAPI.js
@@ -164,7 +164,7 @@ exports.addFn = (newSubscriptions) => {
 ```
 #### removeSubs()
 `removeSubs(existingSubscription)` should be a function that removes webhook subscriptions from your database, returning a promise. `removeSubs()` is used by `incan-js` to delete webhooks automatically (eg. Upon a `410` response). Your `removeSubs()` should by default accept an array and return a success/failure status.
-```
+```js
 // incan.removeSubs() = customDatabaseAPI.removeFn
 
 // customDatabaseAPI.js
@@ -186,7 +186,7 @@ exports.removeFn = (existingSubscriptions) => {
 ```
 #### querySubs()
 `querySubs(resource_id, event_id)` should be a function that queries your database for webhook subscriptions with matching `resource_id` and `event_id`. It should return a promise with an array of matches. `incan-js` will use the `querySubs` function to fulfill any waiting webhooks. Any `POST` request to a webhook endpoint returning a `410` response will automatically unsubscribe from the webhook.
-```
+```js
 // incan.querySubs() = customDatabaseAPI.queryFn
 
 // customDatabaseAPI.js
@@ -202,7 +202,7 @@ exports.queryFn = (resource_id, event_id) => {
 ## Limitations
 `incan-js` and REST Hooks are highly effective for sending real-time updates to static servers (with an I.P. address or domain name). However, it cannot support client -> server communications. For that, check out <a href="https://socket.io/">websockets</a>.<br/><br/>
 You can set `incan-js` to re-attempt failed webhook calls X times before giving up and deleting the webhook subscription. However if your `incan.emit()` lies within a serverless function (such as `AWS API Gateway`), then make sure your `incan.config.duration()` conforms to the 30 second timeout limit.
-```
+```js
 incan.config({
   max_attempts: 3,
   duration: (attempt_num) => {
