@@ -111,7 +111,7 @@ app.post('/unsubscribe', function(err, req) {
   incan.removeSubs(existingSubscriptions)
 })
 ```
-Now that clients have subscribed to events, we can emit events with `incan.emit()`. Behind the scenes, `incan.emit()` will use `querySubs()` to find matching webhook subscriptions in your database. Then `incan.emit()` will send out the event to the appropriate `url_endpoint`, and automatically unsubscribe upon any `410` responses.
+Now that clients have subscribed to events, we can emit events with `incan.emit()`. Behind the scenes, `incan.emit()` will use `querySubs()` to find matching webhook subscriptions in your database. Then `incan.emit()` will send out the event to the appropriate `url_endpoint`s, and automatically unsubscribe upon any `410` responses.
 ```
 // emit the `added_friend` event to all listeners
 
@@ -133,15 +133,16 @@ The below 3 database functions must be custom made per database and passed in to
 #### addSubs()
 `addSubs(newSubscription)` should be a function that adds new webhook subscriptions to your database, returning a promise. Your `addSubs()` should by default accept an array and return a success/failure status.
 ```
-// customDatabaseAPI.js
 // incan.addSubs() = customDatabaseAPI.addFn
+
+// customDatabaseAPI.js
 const newSubscriptions = [{
   client_id: '<IDENTIFIER_OF_CLIENT>',
   resource_id: '<IDENTIFIER_OF_RESOURCE>',
   event_id: '<IDENTIFIER_OF_EVENT>',
   url_endpoint: '<WEBHOOK_TO_HIT>',
 }]
-const addFn = (newSubscriptions) => {
+exports.addFn = (newSubscriptions) => {
   return Promise.all(newSubscriptions.map((sub) => {
     return AztecDB.exec(`
           INSERT client_id, resource_id, event_id, url_endpoint
@@ -150,18 +151,20 @@ const addFn = (newSubscriptions) => {
       `)
     }))
 }
+
 ```
 #### removeSubs()
 `removeSubs(existingSubscription)` should be a function that removes webhook subscriptions from your database, returning a promise. `removeSubs()` is used by `incan-js` to delete webhooks automatically (eg. Upon a `410` response). Your `removeSubs()` should by default accept an array and return a success/failure status.
 ```
-// customDatabaseAPI.js
 // incan.removeSubs() = customDatabaseAPI.removeFn
+
+// customDatabaseAPI.js
 const existingSubscriptions = [{
   client_id: '<IDENTIFIER_OF_CLIENT>',
   resource_id: '<IDENTIFIER_OF_RESOURCE>',
   event_id: '<IDENTIFIER_OF_EVENT>',
 }]
-const removeFn = (existingSubscriptions) => {
+exports.removeFn = (existingSubscriptions) => {
   return Promise.all(existingSubscriptions.map((sub) => {
     return AztecDB.exec(`
         DELETE FROM webhooks_table
@@ -175,9 +178,10 @@ const removeFn = (existingSubscriptions) => {
 #### querySubs()
 `querySubs(resource_id, event_id)` should be a function that queries your database for webhook subscriptions with matching `resource_id` and `event_id`. It should return a promise with an array of matches. `incan-js` will use the `querySubs` function to fulfill any waiting webhooks. Any `POST` request to a webhook endpoint returning a `410` response will automatically unsubscribe from the webhook.
 ```
-// customDatabaseAPI.js
 // incan.querySubs() = customDatabaseAPI.queryFn
-const queryFn = (resource_id, event_id) => {
+
+// customDatabaseAPI.js
+exports.queryFn = (resource_id, event_id) => {
   return AztecDB.exec(`
       SELECT FROM webhooks_table
       WHERE resource_id = resource_id,
