@@ -16,7 +16,7 @@ REST Hooks are an efficient alternative to:
 ## Quick Start
 
 #### Step 0:
-You will need a database to store websocket subscriptions. `incan-js` is database agnostic.
+You will need a database to store websocket subscriptions. `incan-js` is database agnostic because you write the database queries that `incan-js` uses.
 
 #### Step 1:
 Install with npm:
