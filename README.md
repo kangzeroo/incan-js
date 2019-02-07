@@ -33,25 +33,26 @@ incan.connect({
 Use the four `incan-js` functions to manage your REST hook subscriptions.
 ```
 // add a webhook
-incan.addSubs([ resthook_subscription ])
+incan.addSubs(webhooks)
 
 // remove a webhook
-incan.removeSubs([ resthook_subscription ])
+incan.removeSubs(webhooks)
 
 // trigger a webhook
-incan.emit(someEvent.resource_id, someEvent.event_id, someEvent.payload)
+const { resource_id, event_id } = someEvent
+incan.emit(resource_id, event_id, payload)
 
 // query webhooks
-incan.querySubs(someEvent.resource_id, someEvent.event_id)
+incan.querySubs(resource_id, event_id)
 
 
 // reference objects
-const resthook_subscription = {
+const webhooks = [{
   client_id: 'zapier',
   resource_id: 'khan',
   event_id: 'added_friend',
   url_endpoint: 'https://hooks.zapier.com/<unique_path>'
-}
+}]
 const someEvent = {
   resource_id: 'khan',
   event_id: 'added_friend',
@@ -84,6 +85,7 @@ app.post('/subscribe', function(err, req) {
   incan.addSubs(newSubscriptions)
 })
 
+// POST /unsubscribe
 app.post('/unsubscribe', function(err, req) {
   const existingSubscriptions = req.body
   /*
@@ -139,7 +141,7 @@ const addFn = (newSubscriptions) => {
   return Promise.all(newSubscriptions.map((sub) => {
     return AztecDB.exec(`
           INSERT client_id, resource_id, event_id, url_endpoint
-          INTO resthook_subscriptions
+          INTO webhooks_tbl
           VALUES ${sub.client_id}, ${sub.resource_id}, ${sub.event_id}, ${sub.url_endpoint}
       `)
     }))
@@ -158,7 +160,7 @@ const existingSubscriptions = [{
 const removeFn = (existingSubscriptions) => {
   return Promise.all(existingSubscriptions.map((sub) => {
     return AztecDB.exec(`
-        DELETE FROM resthook_subscriptions
+        DELETE FROM webhooks_tbl
         WHERE client_id = ${sub.client_id}
         AND resource_id = ${sub.resource_id}
         AND event_id = ${sub.event_id}
@@ -173,7 +175,7 @@ const removeFn = (existingSubscriptions) => {
 // incan.querySubs() = customDatabaseAPI.queryFn
 const queryFn = (resource_id, event_id) => {
   return AztecDB.exec(`
-      SELECT FROM resthook_subscriptions
+      SELECT FROM webhooks_tbl
       WHERE resource_id = resource_id,
       AND event_id = event_id
   `)
