@@ -199,4 +199,17 @@ exports.queryFn = (resource_id, event_id) => {
 ```
 
 ## Limitations
-`incan-js` and REST Hooks are highly effective for sending real-time updates to static servers (with an I.P. address or domain name). However, it cannot support client -> server communications. For that, check out <a href="https://socket.io/">websockets</a>.
+`incan-js` and REST Hooks are highly effective for sending real-time updates to static servers (with an I.P. address or domain name). However, it cannot support client -> server communications. For that, check out <a href="https://socket.io/">websockets</a>.<br/><br/>
+You can set `incan-js` to re-attempt failed webhook calls X times before giving up and deleting the webhook subscription. However if your `incan.emit()` lies within a serverless function (such as `AWS API Gateway`), then make sure your `incan.config.duration()` conforms to the 30 second timeout limit.
+```
+incan.config({
+  max_attempts: 3,
+  duration: (attempt_num) => {
+    // exponential backoff
+    // attempt_1 = 5 seconds
+    // attempt_2 = 25 seconds
+    // attempt_3 = 125 seconds
+    return Math.pow(5, attempt_num)
+  }
+})
+```
