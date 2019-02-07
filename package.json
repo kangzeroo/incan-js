@@ -1,6 +1,6 @@
 {
   "name": "incan-js",
-  "version": "1.0.2",
+  "version": "0.7.0",
   "description": "A NodeJS library for handling many-to-many webhook subscriptions.",
   "main": "index.js",
   "scripts": {
